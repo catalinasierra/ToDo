@@ -1,8 +1,8 @@
 class ToDo {
-    constructor(id, titulo, fecha, estatus){
+    constructor(id, titulo, fecha, status){
         this.id = id;
         this.titulo= titulo;
         this.fecha = fecha;
-        this.estatus = estatus;
+        this.status = status;
     }
 }

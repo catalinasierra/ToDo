@@ -16,8 +16,8 @@
             <div class="col-md-6">
                 <div class="todolist not-done">
                     <h1>Tareas</h1>
-                    <input type="text" class="form-control add-todo" placeholder="Add todo">
-                    <button id="checkAll" class="btn btn-success">Mark all as done</button>
+                    <input type="text" class="form-control add-todo" placeholder="Add todo" id="titulo">
+                    <button id="checkAll" class="btn btn-success">Marcar como realizado</button>
 
                     <hr>
                     <ul id="sortable" class="list-unstyled">
@@ -47,7 +47,7 @@
             </div>
             <div class="col-md-6">
                 <div class="todolist">
-                    <h1>Already Done</h1>
+                    <h1>Realizado</h1>
                     <ul id="done-items" class="list-unstyled">
                         <li>Some item <button class="remove-item btn btn-default btn-xs pull-right"><span
                                     class="glyphicon glyphicon-remove"></span></button></li>
@@ -57,6 +57,9 @@
             </div>
         </div>
     </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/moment.min.js"></script>
 </body>
 
 </html>
