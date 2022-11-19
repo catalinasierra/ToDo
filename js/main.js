@@ -6,7 +6,6 @@ window.onload = () => {
 function agregarTarea(event) {
     if (event.charCode == 13) {
         const titulo = this.value.trim();
-        console.log(titulo)
 
         if (!titulo.length) {
             alert('Debe escribir un texto.');
@@ -14,16 +13,41 @@ function agregarTarea(event) {
         }
 
 
-    var id = new Date().getTime().toString();
-    console.log(id);
+        var id = new Date().getTime().toString();
+        let fecha = moment().format('YYYY-MM-DD H:mm:ss');
+        const status = false;
+        const tarea = new ToDo(id, titulo, fecha, status);
 
-
-    let fecha = moment();
-    console.log (fecha.format('YYYY-MM-DD H:mm:ss'))
-
-    //const status = false;
-    //console.log(status)
-
-        //const tarea = new ToDo(id, titulo, fecha, status);
+        mostrarTarea(tarea);
+        this.value = '';
+    }
 }
+
+function mostrarTarea(tarea) {
+    const li = document.createElement('li');
+    const div = document.createElement('div');
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    const titulo = document.createTextNode(tarea.titulo);
+
+    input.type = 'checkbox'
+    input.value = ''
+    input.addEventListener('change', () => {
+        const respuesta = confirm('¿Realmente terminó la tarea?');
+
+        if (respuesta) {
+            alert('Quitaremos la tarea');
+            marcarComoRealizado(tarea);
+        }
+    })
+    
+    li.classList.add('ui-state-default');
+    div.classList.add('checkbox');
+
+    label.appendChild(input);
+    label.appendChild(titulo);
+    div.appendChild(label);
+    li.appendChild(div);
+
+    document.querySelector('ul.list-unstyled').appendChild(li);
 }
