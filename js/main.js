@@ -40,14 +40,40 @@ function mostrarTarea(tarea) {
             marcarComoRealizado(tarea);
         }
     })
-    
+
     li.classList.add('ui-state-default');
     div.classList.add('checkbox');
+    
 
     label.appendChild(input);
     label.appendChild(titulo);
     div.appendChild(label);
     li.appendChild(div);
+    
+    
 
     document.querySelector('ul.list-unstyled').appendChild(li);
+}
+
+function marcarComoRealizado(tarea) {
+    const li = document.createElement('li');
+    const titulo = document.createTextNode(tarea.titulo);
+    const button = document.createElement('button');
+    const i = document.createElement('i');
+    button.classList.add('remove-item');
+    button.classList.add('btn');
+    button.classList.add('btn-danger');
+    button.classList.add('btn-xs');
+    button.classList.add('pull-right');
+    button.classList.add('fa-sharp');
+    button.classList.add('fa-solid');
+    button.classList.add('fa-trash');
+    
+
+    li.appendChild(titulo);
+    li.appendChild(button);
+    
+    
+
+    document.querySelectorAll('ul.list-unstyled')[1].appendChild(li);
 }
