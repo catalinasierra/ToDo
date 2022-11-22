@@ -20,6 +20,9 @@ function agregarTarea(event) {
 
         mostrarTarea(tarea);
         this.value = '';
+        localStorage.setItem("Clave", titulo);
+        datos=localStorage.getItem("Clave");
+        console.log(datos);
     }
 }
 
@@ -39,6 +42,7 @@ function mostrarTarea(tarea) {
             alert('Quitaremos la tarea');
             marcarComoRealizado(tarea);
         }
+        
     })
 
     li.classList.add('ui-state-default');
@@ -65,15 +69,24 @@ function marcarComoRealizado(tarea) {
     button.classList.add('btn-danger');
     button.classList.add('btn-xs');
     button.classList.add('pull-right');
-    button.classList.add('fa-sharp');
-    button.classList.add('fa-solid');
-    button.classList.add('fa-trash');
-    
+
+    i.classList.add('fa-sharp');
+    i.classList.add('fa-solid');
+    i.classList.add('fa-trash');
+    button.appendChild(i);
 
     li.appendChild(titulo);
     li.appendChild(button);
-    
-    
 
     document.querySelectorAll('ul.list-unstyled')[1].appendChild(li);
+
+    removeItem();
+    
+}
+function removeItem(){
+    var element = document.getElementById("principal");
+    console.log(element)
+    var child=document.getElementById("titulo");
+    console.log(child)
+    element.removeChild(child);
 }
