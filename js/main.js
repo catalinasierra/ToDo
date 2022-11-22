@@ -1,5 +1,13 @@
 window.onload = () => {
-    document.querySelector('#titulo').addEventListener('keypress', agregarTarea)
+    document.querySelector('#titulo').addEventListener('keypress', agregarTarea);
+
+    let tareas = localStorage.getItem('tareas');
+
+    if (tareas == null) {
+        localStorage.setItem('tareas', JSON.stringify([]));
+    } else {
+        renderizarTareas();
+    }
 }
 
 
@@ -19,6 +27,8 @@ function agregarTarea(event) {
         const tarea = new ToDo(id, titulo, fecha, status);
 
         mostrarTarea(tarea);
+        almacenarTarea(tarea);
+
         this.value = '';
         localStorage.setItem("Clave", titulo);
         datos = localStorage.getItem("Clave");
@@ -42,8 +52,7 @@ function mostrarTarea(tarea) {
             marcarComoRealizado(tarea);
             li.parentElement.removeChild(li);
         }
-
-    })
+    });
 
     li.classList.add('ui-state-default');
     div.classList.add('checkbox');
@@ -77,11 +86,24 @@ function marcarComoRealizado(tarea) {
 
     document.querySelectorAll('ul.list-unstyled')[1].appendChild(li);
 
+    button.addEventListener('click', () => {
+        li.parentElement.removeChild(li);
+    });
 }
-function removeItem() {
-    var element = document.getElementById("principal");
-    console.log(element)
-    var child = document.getElementById("titulo");
-    console.log(child)
-    element.removeChild(child);
+
+function almacenarTarea(tarea) {
+    let tareas = JSON.parse(localStorage.getItem('tareas'));
+    tareas.push(tarea);
+
+    localStorage.setItem('tareas', JSON.stringify(tareas));
+}
+
+function renderizarTareas() {
+    let tareas = JSON.parse(localStorage.getItem('tareas'));
+
+    // TODO: Renderizar en el DOM las tareas existentes:
+    for(const tarea of tareas) {
+        console.log(tarea);
+        console.log(typeof tarea);
+    }
 }
