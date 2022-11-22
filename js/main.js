@@ -21,7 +21,7 @@ function agregarTarea(event) {
         mostrarTarea(tarea);
         this.value = '';
         localStorage.setItem("Clave", titulo);
-        datos=localStorage.getItem("Clave");
+        datos = localStorage.getItem("Clave");
         console.log(datos);
     }
 }
@@ -30,31 +30,28 @@ function mostrarTarea(tarea) {
     const li = document.createElement('li');
     const div = document.createElement('div');
     const label = document.createElement('label');
-    const input = document.createElement('input');
+    const inputCheckbox = document.createElement('input');
     const titulo = document.createTextNode(tarea.titulo);
 
-    input.type = 'checkbox'
-    input.value = ''
-    input.addEventListener('change', () => {
+    inputCheckbox.type = 'checkbox'
+    inputCheckbox.value = ''
+    inputCheckbox.addEventListener('change', () => {
         const respuesta = confirm('¿Realmente terminó la tarea?');
 
         if (respuesta) {
-            alert('Quitaremos la tarea');
             marcarComoRealizado(tarea);
+            li.parentElement.removeChild(li);
         }
-        
+
     })
 
     li.classList.add('ui-state-default');
     div.classList.add('checkbox');
-    
 
-    label.appendChild(input);
+    label.appendChild(inputCheckbox);
     label.appendChild(titulo);
     div.appendChild(label);
     li.appendChild(div);
-    
-    
 
     document.querySelector('ul.list-unstyled').appendChild(li);
 }
@@ -80,13 +77,11 @@ function marcarComoRealizado(tarea) {
 
     document.querySelectorAll('ul.list-unstyled')[1].appendChild(li);
 
-    removeItem();
-    
 }
-function removeItem(){
+function removeItem() {
     var element = document.getElementById("principal");
     console.log(element)
-    var child=document.getElementById("titulo");
+    var child = document.getElementById("titulo");
     console.log(child)
     element.removeChild(child);
 }
