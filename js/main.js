@@ -1,5 +1,5 @@
 window.onload = () => {
-    document.querySelector('#titulo').addEventListener('keypress', agregarTarea);
+    document.querySelector('#titulo').addEventListener('keypress', agregarTarea)
 
     let tareas = localStorage.getItem('tareas');
 
@@ -7,9 +7,11 @@ window.onload = () => {
         localStorage.setItem('tareas', JSON.stringify([]));
     } else {
         renderizarTareas();
+        renderizarTareasRealizadas();
+        eliminarTodo()
     }
-}
 
+}
 
 function agregarTarea(event) {
     if (event.charCode == 13) {
@@ -19,8 +21,6 @@ function agregarTarea(event) {
             alert('Debe escribir un texto.');
             return;
         }
-
-
         var id = new Date().getTime().toString();
         let fecha = moment().format('YYYY-MM-DD H:mm:ss');
         const status = false;
@@ -28,6 +28,7 @@ function agregarTarea(event) {
 
         mostrarTarea(tarea);
         almacenarTarea(tarea);
+
 
         this.value = '';
         localStorage.setItem("Clave", titulo);
@@ -44,14 +45,30 @@ function mostrarTarea(tarea) {
     const titulo = document.createTextNode(tarea.titulo);
 
     inputCheckbox.type = 'checkbox'
-    inputCheckbox.value = ''
+    inputCheckbox.value = tarea.id;
     inputCheckbox.addEventListener('change', () => {
-        const respuesta = confirm('¿Realmente terminó la tarea?');
+        Swal.fire({
+            title: 'Esta seguro que realizo la tarea?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'si, seguro!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Tarea Realizada!',
+                )
+                marcarComoRealizado(tarea);
+                cambiarStatusTarea(tarea.id);
+                li.parentElement.removeChild(li);
+            }
+        })
+        //const respuesta = confirm('¿Realmente terminó la tarea?');
 
-        if (respuesta) {
-            marcarComoRealizado(tarea);
-            li.parentElement.removeChild(li);
-        }
+        //if (respuesta) {
+
+        //}
     });
 
     li.classList.add('ui-state-default');
@@ -89,7 +106,9 @@ function marcarComoRealizado(tarea) {
     button.addEventListener('click', () => {
         li.parentElement.removeChild(li);
     });
+
 }
+
 
 function almacenarTarea(tarea) {
     let tareas = JSON.parse(localStorage.getItem('tareas'));
@@ -100,10 +119,96 @@ function almacenarTarea(tarea) {
 
 function renderizarTareas() {
     let tareas = JSON.parse(localStorage.getItem('tareas'));
-
     // TODO: Renderizar en el DOM las tareas existentes:
-    for(const tarea of tareas) {
-        console.log(tarea);
-        console.log(typeof tarea);
+    for (const tarea of tareas) {
+        if (!tarea.status) {
+            mostrarTarea(tarea);
+        }
     }
+    contarTareasFaltantes()
+    contarTareasRealizadas()
+
+}
+
+
+function contarTareasFaltantes() {
+    let tareas = JSON.parse(localStorage.getItem('tareas'));
+
+    // Solución con ciclos:
+    // let contador = 0;
+
+    // for(const t of tareas) {
+    //     if (t.status) {
+    //         ++contador;
+    //     }
+    // }
+
+    // Solución con filter:
+    document.querySelector('.count-todos').innerHTML = tareas.filter(t => !t.status).length;
+}
+
+function eliminarTodo() {
+    const li = document.createElement('li');
+    const i = document.createElement('i');
+    const button = document.createElement('button');
+    button.classList.add('btn-warning');
+    button.classList.add('btn');
+
+    i.classList.add('fa-solid');
+    i.classList.add('fa-trash');
+    button.appendChild(i);
+    li.appendChild(button);
+
+    const todoFooter = document.querySelectorAll('.todo-footer')[1];
+    console.log(document.querySelectorAll('.todolist')[1])
+    todoFooter.parentElement.insertBefore(button, todoFooter)
+
+    button.addEventListener('click', (tarea) => {
+        const respuesta = confirm('¿Realmente desea eliminar las tareas');
+        
+        if (respuesta) {
+            eliminarTodoDefinitivo();
+            var e = document.querySelectorAll('.list-unstyled')[1];
+            var child= e.lastElementChild
+            while(child){
+                e.removeChild(child)
+                child=e.lastElementChild;
+            }
+
+            renderizarTareasRealizadas();
+        }
+    })
+}
+
+function eliminarTodoDefinitivo() {
+    let tareas = JSON.parse(localStorage.getItem('tareas'));
+
+    tareas = tareas.filter(t => !t.status);
+
+    localStorage.setItem('tareas', JSON.stringify(tareas));
+}
+
+function cambiarStatusTarea(id) {
+    let tareas = JSON.parse(localStorage.getItem('tareas'));
+
+    const tarea = tareas.find(t => t.id == id);
+    tarea.status = true;
+
+    localStorage.setItem('tareas', JSON.stringify(tareas));
+}
+
+function contarTareasRealizadas() {
+    let tareas = JSON.parse(localStorage.getItem('tareas'));
+    document.querySelector('.count-realizado').innerHTML = tareas.filter(t => t.status).length;
+}
+
+function renderizarTareasRealizadas() {
+    let tareas = JSON.parse(localStorage.getItem('tareas'));
+    // TODO: Renderizar en el DOM las tareas existentes:
+    for (const tarea of tareas) {
+        if (tarea.status) {
+            marcarComoRealizado(tarea)
+        }
+    }
+
 }
