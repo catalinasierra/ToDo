@@ -14,7 +14,7 @@ window.onload = () => {
 function agregarTarea(event) {
     if (event.charCode == 13) {
         const titulo = this.value.trim();
-        refrescarpagina()
+
         if (!titulo.length) {
             alert('Debe escribir un texto.');
             return;
@@ -26,14 +26,14 @@ function agregarTarea(event) {
 
         mostrarTarea(tarea);
         almacenarTarea(tarea);
-
+        renderizarConteoTareasFaltantes();
 
         this.value = '';
         localStorage.setItem("Clave", titulo);
         datos = localStorage.getItem("Clave");
-        console.log(datos);
     }
 }
+
 function mostrarTarea(tarea) {
     const li = document.createElement('li');
     const div = document.createElement('div');
@@ -72,6 +72,7 @@ function mostrarTarea(tarea) {
 
     document.querySelector('ul.list-unstyled').appendChild(li);
 }
+
 function marcarComoRealizado(tarea) {
     const li = document.createElement('li');
     const titulo = document.createTextNode(tarea.titulo);
@@ -97,12 +98,14 @@ function marcarComoRealizado(tarea) {
         li.parentElement.removeChild(li);
     });
 }
+
 function almacenarTarea(tarea) {
     let tareas = JSON.parse(localStorage.getItem('tareas'));
     tareas.push(tarea);
 
     localStorage.setItem('tareas', JSON.stringify(tareas));
 }
+
 function renderizarTareas() {
     let tareas = JSON.parse(localStorage.getItem('tareas'));
     for (const tarea of tareas) {
@@ -113,10 +116,12 @@ function renderizarTareas() {
     contarTareasFaltantes()
     contarTareasRealizadas()
 }
+
 function contarTareasFaltantes() {
     let tareas = JSON.parse(localStorage.getItem('tareas'));
     document.querySelector('.count-todos').innerHTML = tareas.filter(t => !t.status).length;
 }
+
 function eliminarTodo() {
     const li = document.createElement('li');
     const i = document.createElement('i');
@@ -130,7 +135,6 @@ function eliminarTodo() {
     li.appendChild(button);
 
     const todoFooter = document.querySelectorAll('.todo-footer')[1];
-    console.log(document.querySelectorAll('.todolist')[1])
     todoFooter.parentElement.insertBefore(button, todoFooter)
 
     button.addEventListener('click', (tarea) => {
@@ -146,26 +150,28 @@ function eliminarTodo() {
                 Swal.fire(
                     'Ha eliminado todo!',
                 )
-            eliminarTodoDefinitivo();
-            var e = document.querySelectorAll('.list-unstyled')[1];
-            var child = e.lastElementChild
-            while (child) {
-                e.removeChild(child)
-                child = e.lastElementChild;
+                eliminarTodoDefinitivo();
+                var e = document.querySelectorAll('.list-unstyled')[1];
+                var child = e.lastElementChild
+                while (child) {
+                    e.removeChild(child)
+                    child = e.lastElementChild;
+                }
+                renderizarTareasRealizadas();
             }
-            renderizarTareasRealizadas();
-        }
-    })
-});
+        })
+    });
 }
+
 function eliminarTodoDefinitivo() {
     let tareas = JSON.parse(localStorage.getItem('tareas'));
 
     tareas = tareas.filter(t => !t.status);
 
     localStorage.setItem('tareas', JSON.stringify(tareas));
-    refrescarpagina()
+    renderizarConteoTareasFaltantes();
 }
+
 function cambiarStatusTarea(id) {
     let tareas = JSON.parse(localStorage.getItem('tareas'));
 
@@ -173,20 +179,24 @@ function cambiarStatusTarea(id) {
     tarea.status = true;
 
     localStorage.setItem('tareas', JSON.stringify(tareas));
-    refrescarpagina()
+    renderizarConteoTareasFaltantes();
 }
+
 function contarTareasRealizadas() {
     let tareas = JSON.parse(localStorage.getItem('tareas'));
     document.querySelector('.count-realizado').innerHTML = tareas.filter(t => t.status).length;
 }
+
 function renderizarTareasRealizadas() {
     let tareas = JSON.parse(localStorage.getItem('tareas'));
+
     for (const tarea of tareas) {
         if (tarea.status) {
             marcarComoRealizado(tarea)
         }
     }
 }
+
 function marcarTodoComoRealizado() {
     let tareas = JSON.parse(localStorage.getItem('tareas'));
     const tareasnorealizadas = tareas.filter(t => !t.status);
@@ -196,15 +206,30 @@ function marcarTodoComoRealizado() {
         }
     }
     localStorage.setItem('tareas', JSON.stringify(tareas));
+
+    eliminarTareasRenderizadas(0);
+    eliminarTareasRenderizadas(1);
+
     renderizarTareasRealizadas()
-    var e = document.querySelector('.list-unstyled');
+
+    contarTareasFaltantes();
+
+    contarTareasRealizadas();
+}
+
+function eliminarTareasRenderizadas(indiceLista) {
+    var e = document.querySelectorAll('.list-unstyled')[indiceLista];
+
     var child = e.lastElementChild
+
     while (child) {
         e.removeChild(child)
         child = e.lastElementChild;
-        refrescarpagina()
     }
 }
-function refrescarpagina() {
-    location.reload()
+
+function renderizarConteoTareasFaltantes() {
+    const conteoTareasFaltantes = JSON.parse(localStorage.getItem('tareas')).filter(t => !t.status).length;
+
+    document.querySelector('.count-todos').innerHTML = conteoTareasFaltantes;
 }
